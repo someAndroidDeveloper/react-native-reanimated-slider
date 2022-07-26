@@ -52,7 +52,7 @@ type Props = {
   borderColor?: string,
   /**
    * a function that gets the current value of the slider as you slide it,
-   * and returns a string to be used inside the ballon. if not provided it will use the 
+   * and returns a string to be used inside the ballon. if not provided it will use the
    * current value as integer.
    */
   ballon?: number => string,
@@ -110,7 +110,13 @@ type Props = {
   /**
    * thumb offset from the end of seek
    */
-  thumbOffset?: number
+  thumbOffset?: number,
+
+  balloonBackgroundColor?: string,
+
+  balloonStyle?: any,
+
+  balloonTextStyle?: any
 };
 
 /**
@@ -126,7 +132,7 @@ type Props = {
  * ...
  *
  * const textRef = useRef()
- * 
+ *
  * renderBallon=()=>(
  *  <View>
  *    <TextInput ref={textRef} />
@@ -140,7 +146,7 @@ type Props = {
  * currentTime= new Value(10)
  * playableDuration= new Value(15)
  * seekableDuration= new Value(20)
- * 
+ *
  * const slidingStart = ()=>{
  *  console.log('slide started')
  * }
@@ -172,12 +178,15 @@ type Props = {
  */
 class Slider extends React.Component<Props> {
   static defaultProps = {
-    minimumTrackTintColor: "#f3f",
+    minimumTrackTintColor: "#fff",
     maximumTrackTintColor: "transparent",
     cacheTrackTintColor: "#777",
     borderColor: "#fff",
     thumbOffset: 7,
     ballonTranslateY: -25,
+    balloonBackgroundColor: 'white',
+    balloonStyle: undefined,
+    balloonTextStyle: undefined,
   };
   ballon = React.createRef();
   constructor(props) {
@@ -290,8 +299,8 @@ class Slider extends React.Component<Props> {
   _onLayout = ({ nativeEvent }) => {
     this.width.setValue(nativeEvent.layout.width);
   };
-  _renderBallon = () => {
-    return <Ballon ref={this.ballon} />;
+  _renderBallon = (props) => {
+    return <Ballon ref={this.ballon} {...props} />;
   };
   _renderThumbImage = style => {
     return <View style={style} />;
@@ -307,7 +316,9 @@ class Slider extends React.Component<Props> {
       cacheTrackTintColor,
       borderColor,
       ballonTranslateY,
-      thumbOffset
+      balloonBackgroundColor,
+      balloonStyle,
+      balloonTextStyle,
     } = this.props;
 
     const ballonRenderer = renderBallon || this._renderBallon;
@@ -392,7 +403,8 @@ class Slider extends React.Component<Props> {
                 }
               ]
             }}>
-            {ballonRenderer({ text: ballon })}
+            {ballonRenderer({ text: ballon, color: balloonBackgroundColor,
+              containerStyle: balloonStyle, textStyle: balloonTextStyle })}
           </Animated.View>
         </Animated.View>
       </PanGestureHandler>

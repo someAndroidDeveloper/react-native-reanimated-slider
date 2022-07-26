@@ -29,7 +29,7 @@ type Props = {
  */
 export default class Ballon extends React.Component<Props> {
   static defaultProps = {
-    color: "#f3f"
+    color: "#fff"
   };
   text = React.createRef();
 
